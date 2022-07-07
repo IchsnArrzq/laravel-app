@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Activity;
 
 use App\Http\Controllers\Controller;
+use App\Models\Machine;
 use App\Models\PlanningMachine;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,37 +22,32 @@ class MachineMonitorController extends Controller
             'hour' => 'required',
             'minute' => 'required',
             'second' => 'required',
-            'planning_machine_id' => 'required'
+            'machine' => 'required'
         ]);
-        $planning_machine = PlanningMachine::find($request->planning_machine_id);
-        // $machine = PlanningMachine->machine;
-
         $fields = [];
         $targets = [];
         $actuals = [];
         $percentages = [];
-
-        foreach (range(1, 24) as $key => $jam) {
-            $fields[$key] = Carbon::now()->setHour(request()->hour)->setMinute(request()->minute)->setSecond(request()->second)->addHour($key)->format('H:i');
-        }
-        foreach ($fields as $key => $field) {
-            // compare date
-            // echo (Carbon::parse($field)->gt($planning_machine->in) and Carbon::parse($field)->lt($planning_machine->out)).' = '.$planning_machine->in.' =  '.$field;
-            if(Carbon::parse($field)->gt($planning_machine->in) and Carbon::parse($field)->lt($planning_machine->out)){
-                $targets[$key] = $planning_machine->qty_planning;
-            }
-            if(Carbon::parse($field)->format('H:i:s') == Carbon::parse($planning_machine->in)->format('H:i:s')){
-                $targets[$key] = $planning_machine->qty_planning;
-            }
-            if(Carbon::parse($field)->format('H:i:s') == Carbon::parse($planning_machine->out)->format('H:i:s')){
-                $targets[$key] = $planning_machine->qty_planning;
+        foreach (Machine::find($request->machine)->planning_machines_monitor as $planning_machine) {
+            if (Carbon::parse($planning_machine->in)->gt($planning_machine->out)) {
+                for ($i = Carbon::parse($planning_machine->date . ' ' . $planning_machine->in); $i <= Carbon::parse(Carbon::parse($planning_machine->date)->tomorrow()->format('Y-m-d') . ' ' . $planning_machine->out); $i->addHour()) {
+                    $targets[$i->format('H:i')] = $planning_machine->qty_planning;
+                    $actuals[$i->format('H:i')] = 50;
+                    $percentages[$i->format('H:i')] = (50 / $planning_machine->qty_planning * 100).'%';
+                }
+            } else {
+                for ($i = Carbon::parse($planning_machine->in); $i <= Carbon::parse($planning_machine->out); $i->addHour()) {
+                    $targets[$i->format('H:i')] = $planning_machine->qty_planning;
+                    $actuals[$i->format('H:i')] = 50;
+                    $percentages[$i->format('H:i')] = (50 / $planning_machine->qty_planning * 100).'%';
+                }
             }
         }
-
         return response()->json([
             'fields' => $fields,
-            'targets' => $targets
+            'targets' => $targets,
+            'actuals' => $actuals,
+            'percentages' => $percentages,
         ]);
-
     }
 }

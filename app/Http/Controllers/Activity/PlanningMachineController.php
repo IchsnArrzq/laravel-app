@@ -56,7 +56,7 @@ class PlanningMachineController extends Controller
                 'qty_planning' => $request->qty_planning,
                 'in' => $request->in,
                 'out' => $request->out,
-                'total' => Carbon::parse($request->in)->diffInHours($request->out),
+                'total' => Carbon::parse($request->in)->gt($request->out) ? Carbon::parse($request->date . ' ' . $request->in)->diffInHours(Carbon::parse($request->date)->tomorrow()->format('Y-m-d') . ' ' . $request->out) : Carbon::parse($request->in)->diffInHours($request->out),
             ]);
             return response()->json([
                 'title' => 'success',
@@ -116,7 +116,7 @@ class PlanningMachineController extends Controller
                 'qty_planning' => $request->qty_planning,
                 'in' => $request->in,
                 'out' => $request->out,
-                'total' => Carbon::parse($request->in)->diffInHours($request->out),
+                'total' => Carbon::parse($request->in)->gt($request->out) ? Carbon::parse($request->date . ' ' . $request->in)->diffInHours(Carbon::parse($request->date)->tomorrow()->format('Y-m-d') . ' ' . $request->out) : Carbon::parse($request->in)->diffInHours($request->out),
             ]);
             return response()->json([
                 'title' => 'success',

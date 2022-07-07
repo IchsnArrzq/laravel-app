@@ -39,7 +39,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', Rules\Password::defaults()],
+        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            $user->syncRoles($request->roles);
+            return response()->json([
+                'title' => 'success',
+                'message' => 'success create shift'
+            ]);
+        } catch (Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
@@ -118,8 +136,10 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user->hasRole('customer')) {
-            $user->customer->products()->delete();
-            $user->customer()->delete();
+            if($user->customer){
+                $user->customer->products()->delete();
+                $user->customer()->delete();
+            }
         }
         $user->delete();
         return response()->json('ok');

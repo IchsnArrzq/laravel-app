@@ -16,9 +16,9 @@ class Machine extends Model
     {
         return $this->hasMany(PlanningMachine::class);
     }
-    public function planning_machine()
+    public function planning_machines_monitor()
     {
-        return $this->hasOne(PlanningMachine::class)->whereDate('date',now()->format('Y-m-d'));
+        return $this->hasMany(PlanningMachine::class)->whereDate('date',now()->format('Y-m-d'));
     }
     protected function updatedAt(): Attribute
     {

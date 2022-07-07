@@ -94,7 +94,29 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $record = $request->validate([
+            'customer_id' => 'required',
+            'part_name' => 'required',
+            'part_number' => 'required',
+            'cycle_time' => 'required',
+            'process' => 'required',
+            'type' => 'required',
+            'unit' => 'required',
+            'maker' => 'required',
+            'cavity' => 'required',
+            'machine_rate' => 'required',
+            'welding_length' => 'required',
+            'dies' => 'required',
+            'dies_lifetime' => 'required',
+        ]);
+        DB::beginTransaction();
+        try {
+            Product::find($id)->update($record);
+            DB::commit();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return response()->json($exception->getMessage(), 500);
+        }
     }
 
     /**
