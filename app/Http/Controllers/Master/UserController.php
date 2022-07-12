@@ -53,7 +53,7 @@ class UserController extends Controller
             $user->syncRoles($request->roles);
             return response()->json([
                 'title' => 'success',
-                'message' => 'success create shift'
+                'message' => 'success create user'
             ]);
         } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
@@ -92,7 +92,6 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-
             if ($request->password == '' or null) {
                 $request->validate([
                     'name' => ['required', 'string', 'max:255'],
@@ -120,7 +119,10 @@ class UserController extends Controller
                 ]);
                 $user->syncRoles($request->roles);
             }
-            return response()->json('ok');
+            return response()->json([
+                'title' => 'success',
+                'message' => 'success update user'
+            ]);
         } catch (Exception $exception) {
             return response()->json($exception->getMessage(), 500);
         }
@@ -136,12 +138,15 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user->hasRole('customer')) {
-            if($user->customer){
+            if ($user->customer) {
                 $user->customer->products()->delete();
                 $user->customer()->delete();
             }
         }
         $user->delete();
-        return response()->json('ok');
+        return response()->json([
+            'title' => 'success',
+            'message' => 'success delete user'
+        ]);
     }
 }

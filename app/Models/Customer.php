@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
     protected $guarded = [];
     public function user()
     {
@@ -40,5 +41,15 @@ class Customer extends Model
             get: fn ($value) => $value ? Carbon::parse($value)->diffForHumans() : $value,
             set: fn ($value) => $value
         );
+    }
+    public function searchableAs()
+    {
+        return 'customers_index';
+    }
+    public function toSearchableArray()
+    {
+        return [
+            'alias' => $this->alias
+        ];
     }
 }

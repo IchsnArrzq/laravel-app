@@ -38,6 +38,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        return response()->json($request->images);
+        $array = [];
+        foreach($request->images as $key => $image){
+            $array[$key] = $image;
+        }
+        return response()->json($array);
+        return $request->file('images');
         $record = $request->validate([
             'customer_id' => 'required',
             'part_name' => 'required',
