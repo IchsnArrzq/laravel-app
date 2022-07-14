@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Imageable extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     protected function updatedAt(): Attribute
     {
         return Attribute::make(
@@ -30,6 +32,13 @@ class Imageable extends Model
         return Attribute::make(
             get: fn ($value) => $value ? Carbon::parse($value)->diffForHumans() : $value,
             set: fn ($value) => $value
+        );
+    }
+    protected function path(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => asset(Storage::url($value)),
+            set: fn ($value) => $value,
         );
     }
 }

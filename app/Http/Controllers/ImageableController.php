@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Imageable;
+use Exception;
 use Illuminate\Http\Request;
-use PDO;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Storage;
 
-class RoleController extends Controller
+class ImageableController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return response()->json(Role::get());
+        //
     }
 
     /**
@@ -48,7 +48,7 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Role::with('permissions')->find($id));
+        //
     }
 
     /**
@@ -59,7 +59,7 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        return response()->json(Role::with('permissions')->find($id));
+        //
     }
 
     /**
@@ -71,24 +71,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $role = Role::find($id);
-        if ($role->name == $request->name) {
-            $request->validate([
-                'name' => 'required',
-            ]);
-        } else {
-            $request->validate([
-                'name' => 'required|unique:roles',
-            ]);
-        }
-        $role->update([
-            'name' => $request->name
-        ]);
-        $role->syncPermissions($request->permissions);
-        return response()->json([
-            'title' => 'success',
-            'message' => 'success update role'
-        ]);
+        //
     }
 
     /**
@@ -99,6 +82,17 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $image = Imageable::find($id);
+            if (Storage::disk('public')->delete($image->getRawOriginal('path'))) {
+                $image->delete();
+            }
+            return response()->json([
+                'title' => 'success',
+                'message' => 'success delete image'
+            ]);
+        } catch (Exception $error) {
+            return response()->json($error->getMessage(), 500);
+        }
     }
 }

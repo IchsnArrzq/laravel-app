@@ -17,7 +17,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return response()->json(Product::with('customer', 'customer.user')->get());
+        return response()->json(Product::with('customer', 'customer.user', 'imageables', 'process_productions')->get());
     }
 
     /**
@@ -38,24 +38,43 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $record = $request->validate([
+        $request->validate([
             'customer_id' => 'required',
             'part_name' => 'required',
             'part_number' => 'required',
-            'cycle_time' => 'required',
-            'process' => 'required',
+            'cycle_time' => 'required|numeric',
+            'process' => 'required|array',
             'type' => 'required',
             'unit' => 'required',
             'maker' => 'required',
             'cavity' => 'required',
             'machine_rate' => 'required',
             'welding_length' => 'required',
-            'dies' => 'required',
-            'dies_lifetime' => 'required',
+            'dies' => 'required|numeric',
+            'dies_lifetime' => 'required|numeric',
         ]);
         DB::beginTransaction();
         try {
-            Product::create($record);
+            $product = Product::create([
+                'customer_id' => $request->customer_id,
+                'part_name' => $request->part_name,
+                'part_number' => $request->part_number,
+                'cycle_time' => $request->cycle_time,
+                'type' => $request->type,
+                'unit' => $request->unit,
+                'maker' => $request->maker,
+                'cavity' => $request->cavity,
+                'machine_rate' => $request->machine_rate,
+                'welding_length' => $request->welding_length,
+                'dies' => $request->dies,
+                'dies_lifetime' => $request->dies_lifetime,
+            ]);
+            $product->process_productions()->sync($request->process);
+            for ($i = 0; $i < collect($request->images)->count(); $i++) {
+                $product->imageables()->create([
+                    'path' => $request->images[$i]->store('product', 'public')
+                ]);
+            }
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
@@ -71,7 +90,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Product::with('customer', 'customer.user')->find($id));
+        return response()->json(Product::with('customer', 'customer.user', 'imageables', 'process_productions')->find($id));
     }
 
     /**
@@ -82,7 +101,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        return response()->json(Product::with('customer', 'customer.user')->find($id));
+        return response()->json(Product::with('customer', 'customer.user', 'imageables', 'process_productions')->find($id));
     }
 
     /**
@@ -94,24 +113,44 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $record = $request->validate([
+        $request->validate([
             'customer_id' => 'required',
             'part_name' => 'required',
             'part_number' => 'required',
-            'cycle_time' => 'required',
-            'process' => 'required',
+            'cycle_time' => 'required|numeric',
+            'process' => 'required|array',
             'type' => 'required',
             'unit' => 'required',
             'maker' => 'required',
             'cavity' => 'required',
             'machine_rate' => 'required',
             'welding_length' => 'required',
-            'dies' => 'required',
-            'dies_lifetime' => 'required',
+            'dies' => 'required|numeric',
+            'dies_lifetime' => 'required|numeric',
         ]);
         DB::beginTransaction();
         try {
-            Product::find($id)->update($record);
+            $product = Product::find($id);
+            $product->update([
+                'customer_id' => $request->customer_id,
+                'part_name' => $request->part_name,
+                'part_number' => $request->part_number,
+                'cycle_time' => $request->cycle_time,
+                'type' => $request->type,
+                'unit' => $request->unit,
+                'maker' => $request->maker,
+                'cavity' => $request->cavity,
+                'machine_rate' => $request->machine_rate,
+                'welding_length' => $request->welding_length,
+                'dies' => $request->dies,
+                'dies_lifetime' => $request->dies_lifetime,
+            ]);
+            $product->process_productions()->sync($request->process);
+            for ($i = 0; $i < collect($request->images)->count(); $i++) {
+                $product->imageables()->create([
+                    'path' => $request->images[$i]->store('product', 'public')
+                ]);
+            }
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();

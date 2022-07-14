@@ -37,4 +37,12 @@ class Product extends Model
             set: fn ($value) => $value
         );
     }
+    public function imageables()
+    {
+        return $this->morphMany(Imageable::class, 'imageable');
+    }
+    public function process_productions()
+    {
+        return $this->belongsToMany(ProcessProduction::class);
+    }
 }

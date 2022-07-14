@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoryMachine;
+use Exception;
 use Illuminate\Http\Request;
-use PDO;
-use Spatie\Permission\Models\Role;
 
-class RoleController extends Controller
+class CategoryMachineController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return response()->json(Role::get());
+        return response()->json(CategoryMachine::get());
     }
 
     /**
@@ -37,7 +37,20 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+        try {
+            CategoryMachine::create([
+                'name' => $request->name
+            ]);
+            return response()->json([
+                'title' => 'success',
+                'message' => 'success create category machine'
+            ]);
+        } catch (Exception $error) {
+            return response()->json($error->getMessage(), 500);
+        }
     }
 
     /**
@@ -48,7 +61,7 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        return response()->json(Role::with('permissions')->find($id));
+        return response()->json(CategoryMachine::find($id));
     }
 
     /**
@@ -59,7 +72,7 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        return response()->json(Role::with('permissions')->find($id));
+        return response()->json(CategoryMachine::find($id));
     }
 
     /**
@@ -71,24 +84,20 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $role = Role::find($id);
-        if ($role->name == $request->name) {
-            $request->validate([
-                'name' => 'required',
+        $request->validate([
+            'name' => 'required'
+        ]);
+        try {
+            CategoryMachine::find($id)->update([
+                'name' => $request->name
             ]);
-        } else {
-            $request->validate([
-                'name' => 'required|unique:roles',
+            return response()->json([
+                'title' => 'success',
+                'message' => 'success update category machine'
             ]);
+        } catch (Exception $error) {
+            return response()->json($error->getMessage(), 500);
         }
-        $role->update([
-            'name' => $request->name
-        ]);
-        $role->syncPermissions($request->permissions);
-        return response()->json([
-            'title' => 'success',
-            'message' => 'success update role'
-        ]);
     }
 
     /**
@@ -99,6 +108,14 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            CategoryMachine::find($id)->delete();
+            return response()->json([
+                'title' => 'success',
+                'message' => 'success delete category machine'
+            ]);
+        } catch (Exception $error) {
+            return response()->json($error->getMessage(), 500);
+        }
     }
 }
