@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //imageable
     Route::resource('imageable', \App\Http\Controllers\ImageableController::class);
+    Route::post('searchable', App\Http\Controllers\SearchableController::class);
 });
 Route::post('monitor', \App\Http\Controllers\Activity\MachineMonitorController::class);
 Route::post('times', function () {
