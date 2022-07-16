@@ -11,10 +11,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -70,5 +71,15 @@ class User extends Authenticatable
             get: fn ($value) => $value ? Carbon::parse($value)->diffForHumans() : $value,
             set: fn ($value) => $value
         );
+    }
+    public function searchableAs()
+    {
+        return 'users_index';
+    }
+    public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name
+        ];
     }
 }

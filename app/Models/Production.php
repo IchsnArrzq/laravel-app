@@ -16,25 +16,4 @@ class Production extends Model
     {
         return $this->BelongsTo(PlanningMachine::class);
     }
-    protected function updatedAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value ?  Carbon::parse($value)->diffForHumans() : $value,
-            set: fn ($value) => $value
-        );
-    }
-    protected function createdAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value ?  Carbon::parse($value)->diffForHumans() : $value,
-            set: fn ($value) => $value
-        );
-    }
-    protected function deletedAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value ? Carbon::parse($value)->diffForHumans() : $value,
-            set: fn ($value) => $value
-        );
-    }
 }

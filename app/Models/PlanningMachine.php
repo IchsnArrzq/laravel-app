@@ -32,6 +32,10 @@ class PlanningMachine extends Model
     {
         return $this->hasMany(Production::class);
     }
+    public function productions_monitor()
+    {
+        return $this->hasMany(Production::class)->whereDate('created_at', today());
+    }
     protected function updatedAt(): Attribute
     {
         return Attribute::make(

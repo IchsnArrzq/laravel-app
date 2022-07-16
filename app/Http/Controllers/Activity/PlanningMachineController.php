@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Activity;
 use App\Http\Controllers\Controller;
 use App\Models\PlanningMachine;
 use Carbon\Carbon;
+use Error;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -39,24 +40,22 @@ class PlanningMachineController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'date' => 'required',
             'product_id' => 'required|exists:products,id',
             'machine_id' => 'required|exists:machines,id',
             'shift_id' => 'required|exists:shifts,id',
             'qty_planning' => 'required',
-            'in' => 'required',
-            'out' => 'required',
+            'datetimein' => 'required|date',
+            'datetimeout' => 'required|date',
         ]);
         try {
             PlanningMachine::create([
-                'date' => $request->date,
                 'product_id' => $request->product_id,
                 'machine_id' => $request->machine_id,
                 'shift_id' => $request->shift_id,
                 'qty_planning' => $request->qty_planning,
-                'in' => $request->in,
-                'out' => $request->out,
-                'total' => Carbon::parse($request->in)->gt($request->out) ? Carbon::parse($request->date . ' ' . $request->in)->diffInHours(Carbon::parse($request->date)->tomorrow()->format('Y-m-d') . ' ' . $request->out) : Carbon::parse($request->in)->diffInHours($request->out),
+                'datetimein' => Carbon::parse($request->datetimein)->format('Y-m-d H:i:s'),
+                'datetimeout' => Carbon::parse($request->datetimeout)->format('Y-m-d H:i:s'),
+                'total' => Carbon::parse($request->datetimein)->diffInHours(Carbon::parse($request->datetimeout)),
             ]);
             return response()->json([
                 'title' => 'success',
@@ -99,24 +98,25 @@ class PlanningMachineController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'date' => 'required',
             'product_id' => 'required|exists:products,id',
             'machine_id' => 'required|exists:machines,id',
             'shift_id' => 'required|exists:shifts,id',
             'qty_planning' => 'required',
-            'in' => 'required',
-            'out' => 'required',
+            'datetimein' => 'required|date',
+            'datetimeout' => 'required|date',
         ]);
+        if (Carbon::parse($request->datetimein)->gt(Carbon::parse($request->datetimeout))) {
+            return throw new Error('less then');
+        }
         try {
             PlanningMachine::find($id)->update([
-                'date' => $request->date,
                 'product_id' => $request->product_id,
                 'machine_id' => $request->machine_id,
                 'shift_id' => $request->shift_id,
                 'qty_planning' => $request->qty_planning,
-                'in' => $request->in,
-                'out' => $request->out,
-                'total' => Carbon::parse($request->in)->gt($request->out) ? Carbon::parse($request->date . ' ' . $request->in)->diffInHours(Carbon::parse($request->date)->tomorrow()->format('Y-m-d') . ' ' . $request->out) : Carbon::parse($request->in)->diffInHours($request->out),
+                'datetimein' => Carbon::parse($request->datetimein)->format('Y-m-d H:i:s'),
+                'datetimeout' => Carbon::parse($request->datetimeout)->format('Y-m-d H:i:s'),
+                'total' => Carbon::parse($request->datetimein)->diffInHours(Carbon::parse($request->datetimeout)),
             ]);
             return response()->json([
                 'title' => 'success',

@@ -45,7 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('monitor', \App\Http\Controllers\Activity\MachineMonitorController::class);
 Route::post('times', function () {
     $hours = [];
-    foreach (range(1, 24) as $key => $jam) {
+    foreach (range(1, 24) as $key => $hour) {
         $hours[$key] = Carbon\Carbon::now()->setHour(request()->hour)->setMinute(request()->minute)->setSecond(request()->second)->addHour($key)->format('H:i');
     }
     return response()->json($hours);

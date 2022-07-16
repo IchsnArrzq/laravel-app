@@ -18,13 +18,12 @@ return new class extends Migration
     {
         Schema::create('planning_machines', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
             $table->foreignIdFor(Product::class);
             $table->foreignIdFor(Machine::class);
             $table->foreignIdFor(Shift::class);
             $table->bigInteger('qty_planning');
-            $table->time('in');
-            $table->time('out');
+            $table->dateTime('datetimein');
+            $table->dateTime('datetimeout');
             $table->integer('total');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
