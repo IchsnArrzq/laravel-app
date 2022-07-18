@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Machine;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class MachineController extends Controller
      */
     public function index()
     {
-        return response()->json(Machine::with(['planning_machines','planning_machines.product','planning_machines.productions','planning_machines_monitor','planning_machines_monitor.product','planning_machines_monitor.productions','planning_machines_monitor.shift'])->get());
+        return response()->json(Machine::with(['planning_machines', 'planning_machines.product', 'planning_machines.productions', 'planning_machines_monitor', 'planning_machines_monitor.product', 'planning_machines_monitor.productions', 'planning_machines_monitor.shift', 'production_status_monitor'])->get());
     }
 
     /**
@@ -39,16 +40,23 @@ class MachineController extends Controller
     {
         $record = $request->validate([
             'name' => 'required',
-            'number' => 'required|unique:machines'
+            'number' => 'required|unique:machines',
+            'category_machine_id' => 'required|exists:category_machines,id',
+            'code' => 'required',
+            'brand' => 'required',
+            'purchase_date' => 'required',
+            'manufacture_date' => 'required',
+            'stroke' => 'required',
+            'production_area' => 'required',
         ]);
-        try{
+        try {
             Machine::create($record);
             return response()->json([
                 'title' => 'success',
                 'message' => 'success create machine'
             ]);
-        }catch(Exception $exception){
-            return response()->json($exception->getMessage(),500);
+        } catch (Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
         }
     }
 
@@ -83,18 +91,35 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $record = $request->validate([
+        $request->validate([
             'name' => 'required',
-            'number' => 'required'
+            'number' => 'required',
+            'category_machine_id' => 'required|exists:category_machines,id',
+            'code' => 'required',
+            'brand' => 'required',
+            'purchase_date' => 'required',
+            'manufacture_date' => 'required',
+            'stroke' => 'required',
+            'production_area' => 'required',
         ]);
-        try{
-            $machine = Machine::find($id)->update($record);
+        try {
+            Machine::find($id)->update([
+                'name' => $request->name,
+                'number' => $request->number,
+                'category_machine_id' => $request->category_machine_id,
+                'code' => $request->code,
+                'brand' => $request->brand,
+                'purchase_date' => Carbon::parse($request->purchase_date)->addDay(1)->format('Y-m-d'),
+                'manufacture_date' => Carbon::parse($request->manufacture_date)->addDay(1)->format('Y-m-d'),
+                'stroke' => $request->stroke,
+                'production_area' => $request->production_area,
+            ]);
             return response()->json([
                 'title' => 'success',
                 'message' => 'success update machine'
             ]);
-        }catch(Exception $exception){
-            return response()->json($exception->getMessage(),500);
+        } catch (Exception $exception) {
+            return response()->json($exception->getMessage(), 500);
         }
     }
 

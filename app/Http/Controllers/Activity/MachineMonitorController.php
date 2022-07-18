@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Activity;
 use App\Http\Controllers\Controller;
 use App\Models\Machine;
 use App\Models\PlanningMachine;
+use App\Models\Production;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -30,6 +31,10 @@ class MachineMonitorController extends Controller
         $targets = [];
         $actuals = [];
         $percentages = [];
+        $line_stop_a = null;
+        $line_stop_b = null;
+        $line_stop_c = null;
+        $line_stop_other = null;
         foreach (Machine::find($request->machine)->planning_machines_monitor as $planning_machine) {
             for ($i = Carbon::parse($planning_machine->datetimein); $i->lte(Carbon::parse($planning_machine->datetimeout)); $i->addHour()) {
                 if ($i->gt(today()) or $i->lte(Carbon::tomorrow())) {
@@ -44,6 +49,10 @@ class MachineMonitorController extends Controller
                     }
                 }
             }
+            $line_stop_a = Production::whereDate('created_at', now()->format('Y-m-d'))->whereTime('created_at', '>=', now()->startOfHour()->format('H:i:s'))->whereTime('created_at', '<=', now()->endOfHour()->format('H:i:s'))->orderBy('created_at', 'desc')->first()?->line_stop_a;
+            $line_stop_b = Production::whereDate('created_at', now()->format('Y-m-d'))->whereTime('created_at', '>=', now()->startOfHour()->format('H:i:s'))->whereTime('created_at', '<=', now()->endOfHour()->format('H:i:s'))->orderBy('created_at', 'desc')->first()?->line_stop_b;
+            $line_stop_c = Production::whereDate('created_at', now()->format('Y-m-d'))->whereTime('created_at', '>=', now()->startOfHour()->format('H:i:s'))->whereTime('created_at', '<=', now()->endOfHour()->format('H:i:s'))->orderBy('created_at', 'desc')->first()?->line_stop_c;
+            $line_stop_other = Production::whereDate('created_at', now()->format('Y-m-d'))->whereTime('created_at', '>=', now()->startOfHour()->format('H:i:s'))->whereTime('created_at', '<=', now()->endOfHour()->format('H:i:s'))->orderBy('created_at', 'desc')->first()?->line_stop_other;
         }
         return response()->json([
             'times' => $times,
@@ -51,6 +60,10 @@ class MachineMonitorController extends Controller
             'targets' => $targets,
             'actuals' => $actuals,
             'percentages' => $percentages,
+            'line_stop_a' => $line_stop_a,
+            'line_stop_b' => $line_stop_b,
+            'line_stop_c' => $line_stop_c,
+            'line_stop_other' => $line_stop_other,
         ]);
     }
 }

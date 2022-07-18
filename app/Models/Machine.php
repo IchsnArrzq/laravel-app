@@ -20,6 +20,10 @@ class Machine extends Model
     {
         return $this->hasMany(PlanningMachine::class)->whereDate('datetimein', Carbon::today())->orWhereDate('datetimeout', Carbon::today())->where('machine_id', $this->id);
     }
+    public function production_status_monitor()
+    {
+        return $this->hasOne(Production::class, 'machine_id', 'id')->whereDate('created_at', now()->format('Y-m-d'))->whereTime('created_at', '>=', now()->startOfHour()->format('H:i:s'))->whereTime('created_at', '<=', now()->endOfHour()->format('H:i:s'))->orderBy('created_at', 'desc');
+    }
     protected function updatedAt(): Attribute
     {
         return Attribute::make(

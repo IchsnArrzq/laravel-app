@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Machine;
 use App\Models\PlanningMachine;
 use App\Models\Production;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,9 +17,9 @@ class ProductionSeeder extends Seeder
      */
     public function run()
     {
-        foreach (range(1, 2) as $key => $minute) {
+        foreach (range(1, 100) as $key => $minute) {
             Production::create([
-                'planning_machine_id' => collect(PlanningMachine::pluck('id'))->random(),
+                'machine_id' => collect(Machine::pluck('id'))->random(),
                 'line_stop_a' => rand(1, 10),
                 'line_stop_b' => rand(1, 10),
                 'line_stop_c' => rand(1, 10),
