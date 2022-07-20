@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class PlanningMachine extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
     protected $guarded = [];
     protected $case = [
         'in' => 'date:hh:mm',
@@ -57,4 +58,15 @@ class PlanningMachine extends Model
             set: fn ($value) => $value
         );
     }
+    public function searchableAs()
+    {
+        return 'planning_machines_index';
+    }
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id
+        ];
+    }
+
 }

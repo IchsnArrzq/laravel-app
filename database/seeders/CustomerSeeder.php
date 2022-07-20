@@ -19,7 +19,7 @@ class CustomerSeeder extends Seeder
     {
         $customers = [];
         $password = Hash::make('password');
-        foreach (range(1, 5) as $key => $value) {
+        foreach (range(1, 1000) as $key => $value) {
             $customers[] = [
                 'user' => [
                     'name' => "customer$value",

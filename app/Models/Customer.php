@@ -49,7 +49,10 @@ class Customer extends Model
     public function toSearchableArray()
     {
         return [
-            'alias' => $this->alias
+            'alias' => $this->alias,
+            'primary' => $this->primary,
+            'secondary' => $this->secondary,
+            'remark' => $this->remark
         ];
     }
 }

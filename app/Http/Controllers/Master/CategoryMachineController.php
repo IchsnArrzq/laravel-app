@@ -16,6 +16,9 @@ class CategoryMachineController extends Controller
      */
     public function index()
     {
+        if (request()->page) {
+            return response()->json(CategoryMachine::paginate(10));
+        }
         return response()->json(CategoryMachine::get());
     }
 

@@ -15,6 +15,9 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        if (request()->page) {
+            return response()->json(Permission::with('roles')->paginate(10));
+        }
         return response()->json(Permission::with('roles')->get());
     }
 

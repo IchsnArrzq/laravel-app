@@ -18,6 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (request()->page) {
+            return response()->json(User::with('roles')->paginate(10));
+        }
         return response()->json(User::with('roles')->get());
     }
 

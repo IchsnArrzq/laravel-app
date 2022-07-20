@@ -16,6 +16,9 @@ class DepartmentController extends Controller
      */
     public function index()
     {
+        if(request()->page){
+            return response()->json(Department::paginate(10));
+        }
         return response()->json(Department::get());
     }
 

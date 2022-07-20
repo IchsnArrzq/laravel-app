@@ -18,6 +18,9 @@ class PlanningMachineController extends Controller
      */
     public function index()
     {
+        if (request()->page) {
+            return response()->json(PlanningMachine::with(['product', 'machine', 'shift', 'product.customer'])->paginate(10));
+        }
         return response()->json(PlanningMachine::with(['product', 'machine', 'shift', 'product.customer'])->get());
     }
 

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class Machine extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
     protected $guarded = [];
     public function planning_machines()
     {
@@ -44,5 +45,16 @@ class Machine extends Model
             get: fn ($value) => $value ? Carbon::parse($value)->diffForHumans() : $value,
             set: fn ($value) => $value
         );
+    }
+    public function searchableAs()
+    {
+        return 'machines _index';
+    }
+    public function toSearchableArray()
+    {
+        return [
+            'part_name' => $this->part_name,
+            'part_number' => $this->part_number,
+        ];
     }
 }

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
     protected $guarded = [];
     public function customer()
     {
@@ -44,5 +45,16 @@ class Product extends Model
     public function process_productions()
     {
         return $this->belongsToMany(ProcessProduction::class);
+    }
+    public function searchableAs()
+    {
+        return 'products_index';
+    }
+    public function toSearchableArray()
+    {
+        return [
+            'part_name' => $this->part_name,
+            'part_number' => $this->part_number,
+        ];
     }
 }
