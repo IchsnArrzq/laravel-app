@@ -26,5 +26,10 @@ class CategoryMachineSeeder extends Seeder
                 'name' => 'steam'
             ]
         ]);
+        foreach (range(1, 50) as $range) {
+            CategoryMachine::create([
+                'name' => fake()->name()
+            ]);
+        }
     }
 }

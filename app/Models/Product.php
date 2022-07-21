@@ -52,9 +52,6 @@ class Product extends Model
     }
     public function toSearchableArray()
     {
-        return [
-            'part_name' => $this->part_name,
-            'part_number' => $this->part_number,
-        ];
+        return $this->first()->toArray();
     }
 }

@@ -18,7 +18,7 @@ class ShiftController extends Controller
     public function index()
     {
         if(request()->page){
-            return response()->json(Shift::paginate(10));
+            return response()->json(Shift::latest()->paginate(10));
         }
         return response()->json(Shift::get());
     }

@@ -22,24 +22,24 @@ class CustomerSeeder extends Seeder
         foreach (range(1, 1000) as $key => $value) {
             $customers[] = [
                 'user' => [
-                    'name' => "customer$value",
-                    'email' => "customer$value@testing.com",
+                    'name' => fake()->name(),
+                    'email' => fake()->unique()->email(),
                     'password' => $password,
                 ],
                 'customer' => [
-                    'alias' => "customer$value",
-                    'pic' => collect(['manager', 'staff', 'direktur'])->random(1)->first(),
-                    'primary' => 'primary',
-                    'secondary' => 'secondary',
-                    'number_fax' => rand(100, 20000),
-                    'postcode' => rand(100,10000),
-                    'address' => 'address',
-                    'remark' => 'remark',
+                    'alias' => fake()->firstName(),
+                    'pic' => fake()->jobTitle(),
+                    'primary' => fake()->phoneNumber(),
+                    'secondary' => fake()->e164PhoneNumber(),
+                    'number_fax' => fake()->randomDigit(),
+                    'postcode' => fake()->postcode(),
+                    'address' => fake()->address(),
+                    'remark' => fake()->sentence(15),
                 ]
             ];
         }
         foreach (array_chunk($customers, 300) as $chunk) {
-            foreach($chunk as $item){
+            foreach ($chunk as $item) {
                 User::create($item['user'])->assignRole('customer')->customer()->create($item['customer']);
             }
         }

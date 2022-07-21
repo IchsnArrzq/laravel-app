@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
         if (request()->page) {
-            return response()->json(Product::with('customer', 'customer.user', 'imageables', 'process_productions')->paginate(10));
+            return response()->json(Product::with('customer', 'customer.user', 'imageables', 'process_productions')->latest()->paginate(10));
         }
         return response()->json(Product::with('customer', 'customer.user', 'imageables', 'process_productions')->get());
     }

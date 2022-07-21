@@ -17,7 +17,7 @@ class RoleController extends Controller
     public function index()
     {
         if (request()->page) {
-            return response()->json(Role::paginate(10));
+            return response()->json(Role::latest()->paginate(10));
         }
         return response()->json(Role::get());
     }

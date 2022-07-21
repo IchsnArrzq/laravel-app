@@ -20,14 +20,25 @@ class SearchableController extends Controller
         ]);
         $model = $request->model;
         $with = $request->filters['with'];
+        $search = $request->filters['search'];
+        if (!in_array(
+            \Str::lower($model),
+            collect(scandir(app_path() . "/Models"))->filter(fn ($qr) => !in_array($qr, ['.', '..']))->map(fn ($qr) => \Str::lower(str_replace('.php', '', $qr)))->toArray()
+        )) {
+            return response()->json(['message' => 'the model not support or not found😶'], 404);
+        }
         try {
-            $search = str_replace(' ', '', "\App\Models\ " . "$model")::search($request->filters['search'])->query(function ($builder) use ($with) {
-                $builder->with($with);
-            })->get()->pluck('id');
-            if (request()->page) {
-                return response()->json(str_replace(' ', '', "\App\Models\ " . "$model")::with($request->filters['with'])->whereIn('id', $search)->paginate(10));
+            switch ($model) {
+                case 'PlanningMachine':
+                    return 'oke😁';
+                    break;
+                default:
+                    $query = str_replace(' ', '', "\App\Models\ " . "$model")::search($search)->get()->pluck('id');
+                    if (request()->page) {
+                        return response()->json(str_replace(' ', '', "\App\Models\ " . "$model")::with($with)->whereIn('id', $query)->paginate(10));
+                    }
+                    return response()->json(str_replace(' ', '', "\App\Models\ " . "$model")::with($with)->whereIn('id', $query)->get());
             }
-            return response()->json(str_replace(' ', '', "\App\Models\ " . "$model")::with($request->filters['with'])->whereIn('id', $search)->get());
         } catch (Exception $error) {
             return response()->json($error->getMessage(), 500);
         }

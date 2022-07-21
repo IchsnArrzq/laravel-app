@@ -21,4 +21,8 @@ class Production extends Model
     {
         return $this->belongsTo(Machine::class);
     }
+    public function toSearchableArray()
+    {
+        return $this->first()->toArray();
+    }
 }

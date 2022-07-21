@@ -18,7 +18,7 @@ class MachineController extends Controller
     public function index()
     {
         if (request()->page) {
-            return response()->json(Machine::with(['planning_machines', 'planning_machines.product', 'planning_machines.productions', 'planning_machines_monitor', 'planning_machines_monitor.product', 'planning_machines_monitor.productions', 'planning_machines_monitor.shift', 'production_status_monitor'])->paginate(10));
+            return response()->json(Machine::with(['planning_machines', 'planning_machines.product', 'planning_machines.productions', 'planning_machines_monitor', 'planning_machines_monitor.product', 'planning_machines_monitor.productions', 'planning_machines_monitor.shift', 'production_status_monitor'])->latest()->paginate(10));
         }
         return response()->json(Machine::with(['planning_machines', 'planning_machines.product', 'planning_machines.productions', 'planning_machines_monitor', 'planning_machines_monitor.product', 'planning_machines_monitor.productions', 'planning_machines_monitor.shift', 'production_status_monitor'])->get());
     }

@@ -35,5 +35,10 @@ class ProcessProductionSeeder extends Seeder
                 'name' => 'metals'
             ],
         ]);
+        foreach (range(1, 100) as $range) {
+            ProcessProduction::create([
+                'name' => fake('eng')->jobTitle()
+            ]);
+        }
     }
 }

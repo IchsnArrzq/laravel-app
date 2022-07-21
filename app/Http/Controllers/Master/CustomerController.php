@@ -20,7 +20,7 @@ class CustomerController extends Controller
     public function index()
     {
         if (request()->page) {
-            return response()->json(Customer::with('user')->paginate(10));
+            return response()->json(Customer::with('user')->latest()->paginate(10));
         }
         return response()->json(Customer::with('user')->get());
     }

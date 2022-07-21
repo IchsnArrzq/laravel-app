@@ -15,17 +15,10 @@ class ShiftSeeder extends Seeder
      */
     public function run()
     {
-        $shifts = [
-            [
-                'name' => 'SHIFT 1'
-            ],
-            [
-                'name' => 'SHIFT 2'
-            ],
-            [
-                'name' => 'SHIFT 3'
-            ],
-        ];
-        Shift::insert($shifts);
+        foreach (range(1, 100) as $shift) {
+            Shift::create([
+                'name' => 'SHIFT ' . $shift
+            ]);
+        }
     }
 }

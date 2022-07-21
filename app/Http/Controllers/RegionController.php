@@ -10,13 +10,13 @@ class RegionController extends Controller
     public function provinces()
     {
         return response()->json(
-            Http::get('https://dev.farizdotid.com/api/daerahindonesia/provinsi')['provinsi']
+            \Indonesia::allProvinces()
         );
     }
     public function city($province)
     {
         return response()->json(
-            Http::get("https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=$province")['kota_kabupaten']
+            \Indonesia::findProvince($province, ['cities'])->cities
         );
     }
 }

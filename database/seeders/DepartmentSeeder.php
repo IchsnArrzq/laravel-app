@@ -15,37 +15,10 @@ class DepartmentSeeder extends Seeder
      */
     public function run()
     {
-        Department::insert([
-            [
-                'name' => 'Sales & Marketing'
-            ],
-            [
-                'name' => 'HRD (Human Resources Department)'
-            ],
-            [
-                'name' => 'Purchasing'
-            ],
-            [
-                'name' => 'Production'
-            ],
-            [
-                'name' => 'QA (Quality Assurance)'
-            ],
-            [
-                'name' => 'Accounting'
-            ],
-            [
-                'name' => 'Warehouse'
-            ],
-            [
-                'name' => 'IT (Information & Technology)'
-            ],
-            [
-                'name' => 'PPIC (Product Planning Inventory Control)'
-            ],
-            [
-                'name' => 'GA (General Affairs)'
-            ]
-        ]);
+        foreach (range(1, 100) as $range) {
+            Department::create([
+                'name' => fake()->jobTitle()
+            ]);
+        }
     }
 }

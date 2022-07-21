@@ -16,41 +16,20 @@ class MachineSeeder extends Seeder
      */
     public function run()
     {
-        $machines = [
-            [
-                'category_machine_id' => collect(CategoryMachine::pluck('id'))->random(),
-                'name' => 'MACHINE 1',
-                'number' => '01',
-                'code' => 'MACHINE-01',
-                'brand' => 'honda',
-                'purchase_date' => now()->format('Y-m-d'),
-                'manufacture_date' => now()->format('Y-m-d'),
-                'stroke' => random_int(1, 100),
-                'production_area' => 'production area',
-            ],
-            [
-                'category_machine_id' => collect(CategoryMachine::pluck('id'))->random(),
-                'name' => 'MACHINE 2',
-                'number' => '02',
-                'code' => 'MACHINE-02',
-                'brand' => 'honda',
-                'purchase_date' => now()->format('Y-m-d'),
-                'manufacture_date' => now()->format('Y-m-d'),
-                'stroke' => random_int(1, 100),
-                'production_area' => 'production area',
-            ],
-            [
-                'category_machine_id' => collect(CategoryMachine::pluck('id'))->random(),
-                'name' => 'MACHINE 3',
-                'number' => '03',
-                'code' => 'MACHINE-03',
-                'brand' => 'honda',
-                'purchase_date' => now()->format('Y-m-d'),
-                'manufacture_date' => now()->format('Y-m-d'),
-                'stroke' => random_int(1, 100),
-                'production_area' => 'production area',
-            ],
-        ];
-        Machine::insert($machines);
+        foreach (range(1, 100) as $machine) {
+            Machine::create(
+                [
+                    'category_machine_id' => collect(CategoryMachine::pluck('id'))->random(),
+                    'name' => fake()->sentence(5) . ' ' . fake()->word(),
+                    'number' => fake()->randomDigit(),
+                    'code' =>  fake()->randomDigit() . '-' . fake()->sentence(5) . ' ' . fake()->word(),
+                    'brand' => collect(['HONDA', 'KAWASAKI', 'YAMAHA', 'SUZUKI'])->random(1)->first(),
+                    'purchase_date' => fake()->date(),
+                    'manufacture_date' => fake()->date(),
+                    'stroke' => random_int(1, 100),
+                    'production_area' => fake()->sentence(10),
+                ],
+            );
+        }
     }
 }

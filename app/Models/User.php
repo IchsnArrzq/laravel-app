@@ -78,9 +78,6 @@ class User extends Authenticatable
     }
     public function toSearchableArray()
     {
-        return [
-            'name' => $this->name,
-            'email' => $this->email
-        ];
+        return $this->first()->toArray();
     }
 }

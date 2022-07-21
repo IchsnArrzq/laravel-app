@@ -17,7 +17,7 @@ class ProcessProductionController extends Controller
     public function index()
     {
         if (request()->page) {
-            return response()->json(ProcessProduction::paginate(10));
+            return response()->json(ProcessProduction::latest()->paginate(10));
         }
         return response()->json(ProcessProduction::get());
     }

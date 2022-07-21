@@ -41,8 +41,6 @@ class Shift extends Model
     }
     public function toSearchableArray()
     {
-        return [
-            'name' => $this->name,
-        ];
+        return $this->first()->toArray();
     }
 }

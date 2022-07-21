@@ -20,10 +20,10 @@ class ProductionSeeder extends Seeder
         foreach (range(1, 100) as $key => $minute) {
             Production::create([
                 'machine_id' => collect(Machine::pluck('id'))->random(),
-                'line_stop_a' => rand(1, 10),
-                'line_stop_b' => rand(1, 10),
-                'line_stop_c' => rand(1, 10),
-                'line_stop_other' => rand(1, 10),
+                'line_stop_a' => rand(1, 100),
+                'line_stop_b' => rand(1, 100),
+                'line_stop_c' => rand(1, 100),
+                'line_stop_other' => rand(1, 100),
                 'qty_actual' => rand(1, 1000),
                 'datetime' => now()->subMinute((int)$key . '0'),
                 'status' => 1,

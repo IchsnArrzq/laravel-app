@@ -64,9 +64,6 @@ class PlanningMachine extends Model
     }
     public function toSearchableArray()
     {
-        return [
-            'id' => $this->id
-        ];
+        return $this->first()->toArray();
     }
-
 }

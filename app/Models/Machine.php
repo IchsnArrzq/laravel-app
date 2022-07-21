@@ -48,13 +48,10 @@ class Machine extends Model
     }
     public function searchableAs()
     {
-        return 'machines _index';
+        return 'machines_index';
     }
     public function toSearchableArray()
     {
-        return [
-            'part_name' => $this->part_name,
-            'part_number' => $this->part_number,
-        ];
+        return $this->first()->toArray();
     }
 }

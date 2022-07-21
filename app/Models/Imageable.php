@@ -41,4 +41,8 @@ class Imageable extends Model
             set: fn ($value) => $value,
         );
     }
+    public function toSearchableArray()
+    {
+        return $this->first()->toArray();
+    }
 }

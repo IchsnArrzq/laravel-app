@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Laravolt\Indonesia\Seeds\CitiesSeeder;
+use Laravolt\Indonesia\Seeds\VillagesSeeder;
+use Laravolt\Indonesia\Seeds\DistrictsSeeder;
+use Laravolt\Indonesia\Seeds\ProvincesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +20,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            ProvincesSeeder::class,
+            CitiesSeeder::class,
+            DistrictsSeeder::class,
+            VillagesSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
@@ -25,6 +33,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             ProcessProductionSeeder::class,
             CustomerSeeder::class,
+            ProductSeeder::class
         ]);
         foreach (Storage::allFiles('public/product') as $file) {
             Storage::delete($file);
